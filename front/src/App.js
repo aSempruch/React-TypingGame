@@ -80,19 +80,22 @@ class TypeBox extends Component {
   handleChange = (e) => {
     const { action } = this.props;
     this.setState({value: e.target.value});
-    const currentIndex = action.getIndex(), currentWord = e.target.value, text = action.getText();
+    const currentIndex = action.getIndex(), currentWord = e.target.value, text = action.getText(), oldWord = action.getWordProg();
 
-    /* Backspace */
-    if(currentWord.length < action.getWordProg().length){
-      console.log("Backspace");
-      action.updateIndex(currentWord.length);
-      action.updateWordProg(currentWord);
-    }
     /* New Text Matches Target Text */
-    else if(currentWord.substring(currentIndex) === text.substring(currentIndex, currentWord.length)){
-      console.log("Match");
-      action.updateIndex(currentWord.length)
-      action.updateWordProg(currentWord)
+    console.log(currentWord + '===' + text.substring(currentIndex, currentWord.length))
+    if(currentWord === text.substring(0, currentWord.length)){
+      console.log(currentWord.length + ' : ' + oldWord.length)
+      if(currentWord.length < oldWord.length){
+        console.log("Backspace Correct");
+        action.updateIndex(currentWord.length);
+        action.updateWordProg(currentWord);
+      }
+      else{
+        console.log("Match");
+        action.updateIndex(currentWord.length)
+        action.updateWordProg(currentWord)
+      }
     }
     /* New Text is Wrong */
     else{
