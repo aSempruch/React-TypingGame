@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { TextField, AppBar, Toolbar, Typography, Paper } from '@material-ui/core'
+import { TextField, AppBar, Toolbar, Typography, Paper, Dialog, DialogContent } from '@material-ui/core'
 
 class App extends Component {
 
@@ -8,20 +8,33 @@ class App extends Component {
     currentIndex: 0,
     currentWordProg: '',
     wordCount: 15,
-    text: 'How much wood would a wood chuck chuck if a wood chuck could chuck wood',
+    text: 'How much wood would a wood chuck chuck if a wood chuck could chuck wood', //Text statically set. I know, it's lame, but I ran out of time
   }
 
   action = {
     updateWordProg: (val) => { this.setState({currentWordProg: val}) },
-    updateIndex: (val) => { this.setState({currentIndex: val}) },
+    updateIndex: (val) => {
+      if(val === this.state.text.length){
+        console.log('Ending Timer');
+        this.setState({endTime: new Date()})
+      } 
+      this.setState({currentIndex: val}) 
+    },
     getWordProg: _ => ( this.state.currentWordProg ),
     getIndex: _ => ( this.state.currentIndex ),
     getText: _ => ( this.state.text ),
+    startTimer: _ => { this.setState({startTime: new Date()}) },
   }
 
   render() {
+    const { startTime, endTime, text } = this.state;
     return (
       <div>
+        <Dialog open={(this.state.endTime !== undefined)}>
+          <DialogContent>
+            Words per Minute: {Math.round(text.split(' ').length / ((endTime-startTime)/60000))}
+          </DialogContent>
+        </Dialog>
         <MyAppBar/>
         <Paper id='GameContainer'>
           <GameTextBox action={ this.action }/>
@@ -73,10 +86,16 @@ class TypeBox extends Component {
 
   state = {
     value: '',
+    init: false,
   }
 
   handleChange = (e) => {
     const { action } = this.props;
+    if(!this.state.init){
+      console.log('Starting Timer');
+      action.startTimer();
+      this.setState({init: true});
+    }
     const currentIndex = action.getIndex(), currentWord = e.target.value, text = action.getText(), oldWord = action.getWordProg();
     /* Do not allow edits of previous verified characters */
     if(currentWord.substring(0, currentWord.length) !== oldWord.substring(0, oldWord.length-1) && currentWord.length < oldWord.length)
