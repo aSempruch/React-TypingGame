@@ -87,7 +87,6 @@ class TypeBox extends Component {
     if(currentWord === text.substring(0, currentWord.length)){
       /* Backspace */
       if(currentWord.length < oldWord.length){
-        console.log("Backspace");
         action.updateIndex(currentWord.length);
         action.updateWordProg(currentWord);
       }
