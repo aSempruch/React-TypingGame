@@ -53,10 +53,8 @@ class GameTextBox extends Component {
     const currentIndex = action.getIndex(), currentWord = action.getWordProg(), text = action.getText();
     var result = [];
     result.push(<span id='Typed' key='typed'><u>{text.substring(0, currentIndex)}</u></span>);
-    if(currentIndex < currentWord.length){
-      console.log('render => incorrect')
+    if(currentIndex < currentWord.length)
       result.push(<span id='Incorrect' key='incorrect'><u>{text.substring(currentIndex, currentWord.length)}</u></span>);
-    }
     result.push(<span id='Untyped' key='untyped'>{text.substring(currentWord.length, text.length)}</span>);
     return result;
   }
@@ -79,27 +77,27 @@ class TypeBox extends Component {
 
   handleChange = (e) => {
     const { action } = this.props;
-    this.setState({value: e.target.value});
     const currentIndex = action.getIndex(), currentWord = e.target.value, text = action.getText(), oldWord = action.getWordProg();
+    /* Do not allow edits of previous verified characters */
+    if(currentWord.substring(0, currentWord.length) !== oldWord.substring(0, oldWord.length-1) && currentWord.length < oldWord.length)
+      return;
+    this.setState({value: e.target.value});
 
     /* New Text Matches Target Text */
-    console.log(currentWord + '===' + text.substring(currentIndex, currentWord.length))
     if(currentWord === text.substring(0, currentWord.length)){
-      console.log(currentWord.length + ' : ' + oldWord.length)
+      /* Backspace */
       if(currentWord.length < oldWord.length){
-        console.log("Backspace Correct");
+        console.log("Backspace");
         action.updateIndex(currentWord.length);
         action.updateWordProg(currentWord);
       }
       else{
-        console.log("Match");
         action.updateIndex(currentWord.length)
         action.updateWordProg(currentWord)
       }
     }
     /* New Text is Wrong */
     else{
-      console.log("Incorrect");
       action.updateWordProg(currentWord);
     }
   }
