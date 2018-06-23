@@ -97,8 +97,9 @@ class TypeBox extends Component {
       this.setState({init: true});
     }
     const currentIndex = action.getIndex(), currentWord = e.target.value, text = action.getText(), oldWord = action.getWordProg();
-    /* Do not allow edits of previous verified characters */
-    if(currentWord.substring(0, currentWord.length) !== oldWord.substring(0, oldWord.length-1) && currentWord.length < oldWord.length)
+    /* Do not allow edits of previous characters and pasting multiple characters into textfield */
+    if((currentWord.substring(0, currentWord.length) !== oldWord.substring(0, oldWord.length-1) && currentWord.length < oldWord.length) || 
+      (currentWord.length-oldWord.length > 1))
       return;
     this.setState({value: e.target.value});
 
